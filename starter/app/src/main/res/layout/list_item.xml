@@ -12,15 +12,29 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/app_background">
 
+<!--        TODO: Fix position of image-->
+        <ImageView
+            android:id="@+id/asteroid_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/status_string"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:statusIcon="@{asteroid.potentiallyHazardous}"
+            tools:srcCompat="@drawable/ic_status_normal" />
+
         <TextView
-            android:id="@+id/asteroid_id"
+            android:id="@+id/asteroid_codename"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
+            android:text="@{asteroid.codename}"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -29,26 +43,16 @@
             tools:text="68347 (2001 KB67)" />
 
         <TextView
-            android:id="@+id/approach_date"
+            android:id="@+id/asteroid_approach_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:text="@{asteroid.closeApproachDate}"
             android:textColor="@color/text_grey"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@+id/asteroid_id"
-            app:layout_constraintTop_toBottomOf="@+id/asteroid_id"
+            app:layout_constraintStart_toStartOf="@+id/asteroid_codename"
+            app:layout_constraintTop_toBottomOf="@+id/asteroid_codename"
             tools:text="2020-02-08" />
 
-        <ImageView
-            android:id="@+id/asteroid_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:contentDescription="@string/status_string"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/asteroid_id"
-            app:statusIcon="@{asteroid.potentiallyHazardous}"
-            tools:srcCompat="@drawable/ic_status_normal" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
