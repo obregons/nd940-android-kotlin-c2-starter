@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         android:background="@color/app_background">
 
-<!--        TODO: Fix position of image-->
         <ImageView
             android:id="@+id/asteroid_status"
             android:layout_width="0dp"
