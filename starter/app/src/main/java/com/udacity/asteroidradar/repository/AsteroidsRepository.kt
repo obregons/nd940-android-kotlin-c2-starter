@@ -10,6 +10,8 @@ import com.udacity.asteroidradar.network.Radar
 import com.udacity.asteroidradar.network.asDatabaseModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
+import java.lang.Exception
 
 class AsteroidsRepository(private val database: AsteroidsDatabase) {
     val asteroids: LiveData<List<Asteroid>> =
@@ -19,9 +21,14 @@ class AsteroidsRepository(private val database: AsteroidsDatabase) {
 
     suspend fun refreshData() {
         withContext(Dispatchers.IO) {
-            val asteroidList = Radar.service.getAsteroidsByDateAsync().await()
-            val container = NetworkAsteroidContainer(asteroidList)
-            database.asteroidDao.insertAll(*container.asDatabaseModel())
+            Timber.d("Get data from network")
+            try {
+                val asteroidList = Radar.service.getAsteroidsByDateAsync().await()
+                val container = NetworkAsteroidContainer(asteroidList)
+                database.asteroidDao.insertAll(*container.asDatabaseModel())
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
     }
 }
