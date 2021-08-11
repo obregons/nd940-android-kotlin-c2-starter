@@ -11,6 +11,12 @@ import com.udacity.asteroidradar.databinding.ListItemBinding
 class AsteroidListAdapter(val onClickListener: OnClickListener) :
     ListAdapter<Asteroid, AsteroidListAdapter.AsteroidViewHolder>(DiffCallback) {
 
+    var asteroids: List<Asteroid> = emptyList()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
     object DiffCallback : DiffUtil.ItemCallback<Asteroid>() {
         override fun areItemsTheSame(oldItem: Asteroid, newItem: Asteroid): Boolean {
             return oldItem === newItem
@@ -30,7 +36,7 @@ class AsteroidListAdapter(val onClickListener: OnClickListener) :
     }
 
     override fun onBindViewHolder(holder: AsteroidViewHolder, position: Int) {
-        val asteroid = getItem(position)
+        val asteroid = asteroids[position]
         holder.itemView.setOnClickListener {
             onClickListener.onClick(asteroid)
         }
@@ -40,6 +46,8 @@ class AsteroidListAdapter(val onClickListener: OnClickListener) :
     class OnClickListener(val clickListener: (asteroid: Asteroid) -> Unit) {
         fun onClick(asteroid: Asteroid) = clickListener(asteroid)
     }
+
+    override fun getItemCount() = asteroids.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AsteroidViewHolder {
         return AsteroidViewHolder(
