@@ -16,3 +16,6 @@
 gradle/
 gradlew*
 starter/local.properties
+**/group-index.xml
+**/master-index.xml
+**/sdk-registry.xml
