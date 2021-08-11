@@ -26,10 +26,6 @@ interface RadarService {
     ): Deferred<String>
 }
 
-private val moshi = Moshi.Builder()
-    .add(KotlinJsonAdapterFactory())
-    .build()
-
 @SuppressLint("WeekBasedYear")
 private fun getStartDate(): String {
     val calendar = Calendar.getInstance()
