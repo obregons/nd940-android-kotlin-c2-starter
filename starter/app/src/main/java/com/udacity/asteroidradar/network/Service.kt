@@ -36,7 +36,6 @@ private fun getStartDate(): String {
     val currentTime = calendar.time
     val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
     return dateFormat.format(currentTime)
-
 }
 
 @SuppressLint("WeekBasedYear")

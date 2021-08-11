@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.Asteroid
-import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
+import com.udacity.asteroidradar.network.NetworkAsteroidContainer
 import com.udacity.asteroidradar.network.Radar
+import com.udacity.asteroidradar.network.asDomainModel
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 
 class MainViewModel : ViewModel() {
     private val _asteroids = MutableLiveData<List<Asteroid>>()
@@ -28,14 +28,15 @@ class MainViewModel : ViewModel() {
     }
 
     init {
-        getAsteroids()
+        refreshDataFromNetwork()
     }
 
-    private fun getAsteroids() {
+    private fun refreshDataFromNetwork() {
         viewModelScope.launch {
             try {
                 val result = Radar.service.getAsteroidsByDateAsync().await()
-                _asteroids.value = parseAsteroidsJsonResult(JSONObject(result))
+                val container = NetworkAsteroidContainer(result)
+                _asteroids.postValue(container.asDomainModel())
             } catch (e: Exception) {
                 _asteroids.value = ArrayList()
             }
