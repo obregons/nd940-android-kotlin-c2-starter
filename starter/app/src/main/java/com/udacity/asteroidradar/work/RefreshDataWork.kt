@@ -19,7 +19,8 @@ class RefreshDataWorker(appContext: Context, params: WorkerParameters) :
         val database = getDatabase(applicationContext)
         val repository = AsteroidsRepository(database)
         return try {
-            Timber.d("Refreshing Data")
+            Timber.d("Refresh data and clean database")
+            repository.cleanData()
             repository.refreshData()
             Result.success()
         } catch (e: HttpException) {

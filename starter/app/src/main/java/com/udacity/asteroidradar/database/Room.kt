@@ -3,16 +3,18 @@ package com.udacity.asteroidradar.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.udacity.asteroidradar.Asteroid
 
 @Dao
 interface AsteroidDao {
 
-    @Query("SELECT * from databaseasteroid ORDER BY date(closeapproachdate)")
-    fun getAllAsteroids(): LiveData<List<DatabaseAsteroid>>
+    @Query("SELECT * from databaseasteroid WHERE date(closeapproachdate) >= date(:today) ORDER BY date(closeapproachdate)")
+    fun getCurrentAsteroids(today: String): LiveData<List<DatabaseAsteroid>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg asteroids: DatabaseAsteroid)
+
+    @Query("DELETE from databaseasteroid WHERE date(closeapproachdate) < date(:today)" )
+    fun deleteOldAsteroids(today: String)
 
     @Query("DELETE FROM databaseasteroid")
     fun clear()

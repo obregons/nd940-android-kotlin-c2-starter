@@ -8,14 +8,14 @@ import com.udacity.asteroidradar.database.asDomainModel
 import com.udacity.asteroidradar.network.NetworkAsteroidContainer
 import com.udacity.asteroidradar.network.Radar
 import com.udacity.asteroidradar.network.asDatabaseModel
+import com.udacity.asteroidradar.network.getCurrentDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.lang.Exception
 
 class AsteroidsRepository(private val database: AsteroidsDatabase) {
     val asteroids: LiveData<List<Asteroid>> =
-        Transformations.map(database.asteroidDao.getAllAsteroids()) {
+        Transformations.map(database.asteroidDao.getCurrentAsteroids(getCurrentDate())) {
             it.asDomainModel()
         }
 
@@ -26,6 +26,17 @@ class AsteroidsRepository(private val database: AsteroidsDatabase) {
                 val asteroidList = Radar.service.getAsteroidsByDateAsync().await()
                 val container = NetworkAsteroidContainer(asteroidList)
                 database.asteroidDao.insertAll(*container.asDatabaseModel())
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+    }
+
+    suspend fun cleanData() {
+        withContext(Dispatchers.IO) {
+            Timber.d("Delete old asteroids")
+            try {
+                database.asteroidDao.deleteOldAsteroids(getCurrentDate())
             } catch (e: Exception) {
                 Timber.e(e)
             }

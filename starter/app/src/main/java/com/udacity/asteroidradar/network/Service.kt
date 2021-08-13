@@ -2,8 +2,6 @@ package com.udacity.asteroidradar.network
 
 import android.annotation.SuppressLint
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.Constants.API_KEY
 import com.udacity.asteroidradar.Constants.BASE_URL
@@ -20,14 +18,15 @@ interface RadarService {
     // https://api.nasa.gov/neo/rest/v1/feed?start_date=START_DATE&end_date=END_DATE&api_key=YOUR_API_KEY
     @GET("neo/rest/v1/feed")
     fun getAsteroidsByDateAsync(
-        @Query("start_date") start: String = getStartDate(),
+        @Query("start_date") start: String = getCurrentDate(),
         @Query("end_date") end: String = getEndDate(),
         @Query("api_key") key: String = API_KEY
     ): Deferred<String>
 }
 
+// TODO: Make this a helper function since we use it in a couple of places
 @SuppressLint("WeekBasedYear")
-private fun getStartDate(): String {
+fun getCurrentDate(): String {
     val calendar = Calendar.getInstance()
     val currentTime = calendar.time
     val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
