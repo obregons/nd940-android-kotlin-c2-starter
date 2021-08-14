@@ -5,6 +5,7 @@
     android:id="@+id/layout">
 
     <data>
+
         <variable
             name="asteroid"
             type="com.udacity.asteroidradar.Asteroid" />
@@ -20,7 +21,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:contentDescription="@string/status_string"
+            android:contentDescription="@{asteroid.potentiallyHazardous ? @string/potentially_hazardous_asteroid_image : @string/not_hazardous_asteroid_image}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
