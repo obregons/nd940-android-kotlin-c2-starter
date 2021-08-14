@@ -2,11 +2,15 @@ package com.udacity.asteroidradar.network
 
 import android.annotation.SuppressLint
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.Constants.API_KEY
 import com.udacity.asteroidradar.Constants.BASE_URL
+import com.udacity.asteroidradar.PictureOfDay
 import kotlinx.coroutines.Deferred
 import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -22,6 +26,12 @@ interface RadarService {
         @Query("end_date") end: String = getEndDate(),
         @Query("api_key") key: String = API_KEY
     ): Deferred<String>
+
+    // https://api.nasa.gov/planetary/apod?api_key=YOUR_API_KEY
+    @GET("planetary/apod")
+    fun getPictureOfDay(
+        @Query("api_key") key: String = API_KEY
+    ): Deferred<PictureOfDay>
 }
 
 // TODO: Make this a helper function since we use it in a couple of places
@@ -42,14 +52,28 @@ private fun getEndDate(): String {
     return dateFormat.format(currentTime)
 }
 
+private val moshi = Moshi.Builder()
+    .add(KotlinJsonAdapterFactory())
+    .build()
+
 object Radar {
-    private val retrofit = Retrofit.Builder()
+    private val retrofitScalar = Retrofit.Builder()
         .addConverterFactory(ScalarsConverterFactory.create())
         .addCallAdapterFactory(CoroutineCallAdapterFactory())
         .baseUrl(BASE_URL)
         .build()
 
+    private val retrofitMoshi = Retrofit.Builder()
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .addCallAdapterFactory(CoroutineCallAdapterFactory())
+        .baseUrl(BASE_URL)
+        .build()
+
     val service: RadarService by lazy {
-        retrofit.create(RadarService::class.java)
+        retrofitScalar.create(RadarService::class.java)
+    }
+
+    val picture: RadarService by lazy {
+        retrofitMoshi.create(RadarService::class.java)
     }
 }
