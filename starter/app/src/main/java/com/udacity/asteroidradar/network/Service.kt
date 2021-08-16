@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.udacity.asteroidradar.BuildConfig
 import com.udacity.asteroidradar.Constants
-import com.udacity.asteroidradar.Constants.API_KEY
 import com.udacity.asteroidradar.Constants.BASE_URL
 import com.udacity.asteroidradar.PictureOfDay
 import kotlinx.coroutines.Deferred
@@ -26,13 +26,13 @@ interface RadarService {
     fun getAsteroidsByDateAsync(
         @Query("start_date") start: String = getCurrentDate(),
         @Query("end_date") end: String = getEndDate(),
-        @Query("api_key") key: String = API_KEY
+        @Query("api_key") key: String = BuildConfig.NASA_API_KEY
     ): Deferred<String>
 
     // https://api.nasa.gov/planetary/apod?api_key=YOUR_API_KEY
     @GET("planetary/apod")
     fun getPictureOfDay(
-        @Query("api_key") key: String = API_KEY
+        @Query("api_key") key: String = BuildConfig.NASA_API_KEY
     ): Deferred<PictureOfDay>
 }
 
