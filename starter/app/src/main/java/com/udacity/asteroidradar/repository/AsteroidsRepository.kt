@@ -12,6 +12,7 @@ import com.udacity.asteroidradar.network.getCurrentDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.net.SocketTimeoutException
 
 class AsteroidsRepository(private val database: AsteroidsDatabase) {
     val asteroids: LiveData<List<Asteroid>> =
@@ -27,7 +28,11 @@ class AsteroidsRepository(private val database: AsteroidsDatabase) {
                 val container = NetworkAsteroidContainer(asteroidList)
                 database.asteroidDao.insertAll(*container.asDatabaseModel())
             } catch (e: Exception) {
-                Timber.e(e)
+                if (e is SocketTimeoutException) {
+                    Timber.e(e, "Connection timeout")
+                } else {
+                    Timber.e(e)
+                }
             }
         }
     }

@@ -9,6 +9,7 @@ import com.udacity.asteroidradar.Constants.API_KEY
 import com.udacity.asteroidradar.Constants.BASE_URL
 import com.udacity.asteroidradar.PictureOfDay
 import kotlinx.coroutines.Deferred
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -16,6 +17,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 interface RadarService {
@@ -57,16 +59,28 @@ private val moshi = Moshi.Builder()
     .build()
 
 object Radar {
+
+    // Define an okHttp client to set timeouts and avoid SocketTimeoutException
+    // https://howtodoinjava.com/retrofit2/connection-timeout-exception/
+    private var okHttpClient = OkHttpClient.Builder()
+        .callTimeout(3, TimeUnit.MINUTES)
+        .connectTimeout(2, TimeUnit.MINUTES)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(10, TimeUnit.SECONDS)
+        .build()
+
     private val retrofitScalar = Retrofit.Builder()
         .addConverterFactory(ScalarsConverterFactory.create())
         .addCallAdapterFactory(CoroutineCallAdapterFactory())
         .baseUrl(BASE_URL)
+        .client(okHttpClient)
         .build()
 
     private val retrofitMoshi = Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .addCallAdapterFactory(CoroutineCallAdapterFactory())
         .baseUrl(BASE_URL)
+        .client(okHttpClient)
         .build()
 
     val service: RadarService by lazy {

@@ -51,7 +51,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     init {
         viewModelScope.launch {
             getPicture()
-            asteroidsRepository.refreshData()
+            if (asteroidsRepository.asteroids.value == null) {
+                asteroidsRepository.refreshData()
+            }
         }
     }
 
